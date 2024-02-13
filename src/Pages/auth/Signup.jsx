@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setEmail, setOtp, setDisable, setPassword,setShowOTPField,setLoading } from '../signupSlice';
+import { setEmail, setOtp, setDisable, setPassword,setShowOTPField,setLoading } from '../authSlice';
 import { useNavigate } from 'react-router-dom';
 import useCountdown from '../../hooks/countdown'; // Import the custom countdown hook
 import { handleOTPVerificationAction, handleSignupAction, resendOtpAction } from './authAction';
@@ -15,13 +15,11 @@ const Signup = () => {
 
   //bring the state from store
   const { email, password, otp, disable ,showOTPField,loading} = useSelector(
-    (state) => state.signup
+    (state) => state.auth
   );
 
   // Use the custom countdown hook
   const seconds = useCountdown();
-
-  console.log(showOTPField)
 
   const handleSignup = async (e) => {
     e.preventDefault();

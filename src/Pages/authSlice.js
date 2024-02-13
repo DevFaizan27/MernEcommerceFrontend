@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   email: '',
   password: '',
+  newPassword: '',
   otp: '',
   step: 1,
   disable: false,
@@ -11,8 +12,8 @@ const initialState = {
   loading:false,
 };
 
-const signupSlice = createSlice({
-  name: 'signup',
+const authSlice = createSlice({
+  name: 'auth',
   initialState,
   reducers: {
     setEmail(state, action) {
@@ -20,6 +21,9 @@ const signupSlice = createSlice({
     },
     setPassword(state, action) {
       state.password = action.payload;
+    },
+    setNewPassword(state, action) {
+      state.newPassword = action.payload;
     },
     setOtp(state, action) {
       state.otp = action.payload;
@@ -42,12 +46,13 @@ const signupSlice = createSlice({
 export const {
   setEmail,
   setPassword,
+  setNewPassword,
   setOtp,
   setStep,
   setDisable,
   setTimer,
   setShowOTPField,
   setLoading
-} = signupSlice.actions;
+} = authSlice.actions;
 
-export default signupSlice.reducer;
+export default authSlice.reducer;
