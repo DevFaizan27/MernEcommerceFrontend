@@ -1,6 +1,6 @@
 import React from 'react'
 import { resetPasswordAction, resetPasswordOtpAction } from './authAction'
-import { setEmail, setOtp, setNewPassword,setShowOTPField,setLoading } from '../authSlice';
+import { setEmail, setOtp, setNewPassword,setShowOTPField,setLoading } from './authSlice';
 import { useNavigate } from 'react-router-dom';
 import Spinner from '../../components/Spinner';
 import { useDispatch, useSelector } from 'react-redux';

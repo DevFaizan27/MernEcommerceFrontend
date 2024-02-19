@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
+  name:'',
   email: '',
   password: '',
   newPassword: '',
@@ -16,6 +17,9 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    setName(state,action){
+      state.name=action.payload;
+    },
     setEmail(state, action) {
       state.email = action.payload;
     },
@@ -44,6 +48,7 @@ const authSlice = createSlice({
 });
 
 export const {
+  setName,
   setEmail,
   setPassword,
   setNewPassword,

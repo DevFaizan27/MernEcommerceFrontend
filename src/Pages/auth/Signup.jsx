@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setEmail, setOtp, setDisable, setPassword,setShowOTPField,setLoading } from '../authSlice';
+import {setName, setEmail, setOtp, setDisable, setPassword,setShowOTPField,setLoading } from './authSlice';
 import { useNavigate } from 'react-router-dom';
 import useCountdown from '../../hooks/countdown'; // Import the custom countdown hook
 import { handleOTPVerificationAction, handleSignupAction, resendOtpAction } from './authAction';
@@ -14,7 +14,7 @@ const Signup = () => {
   const navigate = useNavigate();
 
   //bring the state from store
-  const { email, password, otp, disable ,showOTPField,loading} = useSelector(
+  const {name, email, password, otp, disable ,showOTPField,loading} = useSelector(
     (state) => state.auth
   );
 
@@ -23,7 +23,7 @@ const Signup = () => {
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    handleSignupAction(email,password, dispatch, setDisable, setShowOTPField,setLoading);
+    handleSignupAction(name,email,password, dispatch, setDisable, setShowOTPField,setLoading);
   };
 
   // Function to handle OTP verification
@@ -44,6 +44,14 @@ const Signup = () => {
         {loading?<Spinner/>:(
           <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-lg">
         <h1 className="text-3xl font-semibold mb-4 text-center text-indigo-600">Welcome to khareedo.com</h1>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => dispatch(setName(e.target.value))}
+          placeholder="name"
+          disabled={showOTPField}
+          className="block w-full border border-gray-300 rounded-md px-4 py-2 mb-4 focus:outline-none focus:border-indigo-500"
+        />
         <input
           type="email"
           value={email}

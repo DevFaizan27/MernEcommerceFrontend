@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 
 //action for signup
 export const handleSignupAction = async (
+  name,
   email,
   password,
   dispatch,
@@ -15,6 +16,7 @@ export const handleSignupAction = async (
   try {
     dispatch(setLoading(true));
     const response = await axios.post(`http://localhost:5555/api/user/signup`, {
+      name,
       email,
       password,
     });
