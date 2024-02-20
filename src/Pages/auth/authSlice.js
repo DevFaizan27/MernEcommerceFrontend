@@ -1,63 +1,90 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { handleOTPVerificationAction, handleSignupAction, resendOtpAction } from './authAction';
+
+
+
+// const token = JSON.parse(localStorage.getItem('token'))
+
 
 const initialState = {
-  name:'',
-  email: '',
-  password: '',
-  newPassword: '',
-  otp: '',
+  // token: token ? token : null,
   step: 1,
   disable: false,
   timer: 60,
   showOTPField: false,
-  loading:false,
+  isLoading:false,
+  isOtpSendSuccess:false,
+  isSuccess:false,
+  isError:false,
+  message:''
 };
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setName(state,action){
-      state.name=action.payload;
-    },
-    setEmail(state, action) {
-      state.email = action.payload;
-    },
-    setPassword(state, action) {
-      state.password = action.payload;
-    },
-    setNewPassword(state, action) {
-      state.newPassword = action.payload;
-    },
-    setOtp(state, action) {
-      state.otp = action.payload;
-    },
-    setDisable(state, action) {
-      state.disable = action.payload;
-    },
-    setTimer(state, action) {
-      state.timer = action.payload;
-    },
-    setShowOTPField(state, action) {
-      state.showOTPField = action.payload;
-    },
-    setLoading(state, action) {
-      state.loading = action.payload;
+    reset: (state) => {
+      state.isLoading = false
+      state.isSuccess = false
+      state.isError = false
+      state.isError=false
+      state.disable=false
+      state.step=1
+      state.isOtpSendSuccess=false
+      state.timer=60
+      state.showOTPField=false
+      state.message = ''
     },
   },
+  extraReducers:(buider)=>{
+    buider
+    .addCase(handleSignupAction.pending,(state)=>{
+      state.isLoading=true
+      state.disable=true
+      state.showOTPField=true
+    })
+    .addCase(handleSignupAction.fulfilled,(state,action)=>{
+      state.isLoading=false
+      state.isOtpSendSuccess=true
+      state.message=action.payload
+    })
+    .addCase(handleSignupAction.rejected, (state, action) => {
+      state.isLoading = false
+      state.isError = true
+      state.message = action.payload
+      // state.token = null
+    })
+    .addCase(handleOTPVerificationAction.pending,(state)=>{
+      state.isLoading=true
+    })
+    .addCase(handleOTPVerificationAction.fulfilled,(state,action)=>{
+      state.isLoading=false
+      state.isSuccess=true
+      state.message=action.payload
+    })
+    .addCase(handleOTPVerificationAction.rejected, (state, action) => {
+      state.isLoading = false
+      state.isError = true
+      state.message = action.payload
+      // state.token = null
+    })
+    .addCase(resendOtpAction.pending,(state)=>{
+      state.isLoading=true
+      state.disable=true
+    })
+    .addCase(resendOtpAction.fulfilled,(state,action)=>{
+      state.isLoading=false
+      state.message=action.payload
+    })
+    .addCase(resendOtpAction.rejected, (state, action) => {
+      state.isLoading = false
+      state.isError = true
+      state.message = action.payload
+      // state.token = null
+    })
+  }
 });
 
-export const {
-  setName,
-  setEmail,
-  setPassword,
-  setNewPassword,
-  setOtp,
-  setStep,
-  setDisable,
-  setTimer,
-  setShowOTPField,
-  setLoading
-} = authSlice.actions;
+export const {reset} = authSlice.actions;
 
 export default authSlice.reducer;
