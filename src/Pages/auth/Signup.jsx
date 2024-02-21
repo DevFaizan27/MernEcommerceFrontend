@@ -26,7 +26,7 @@ const Signup = () => {
 
   useEffect(() => {
     if (isError) {
-      toast.error(isError.message);
+      toast.error(message);
     }
 
     if (isOtpSendSuccess) {
@@ -35,7 +35,7 @@ const Signup = () => {
 
     if (isSuccess) {
       toast.success(message);
-      navigate('/');
+      navigate('/login');
     }
 
     if (isError) {
