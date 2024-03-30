@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import {  useNavigate } from 'react-router-dom';
 import { useDispatch,useSelector } from 'react-redux';
-import { loginAction } from './authAction';
+import { loginAction } from '../../Redux/Actions/authAction.js';
 import toast from 'react-hot-toast';
-import { reset } from './authSlice';
+import { reset } from '../../Redux/Slices/authSlice.js';
 import Spinner from '../../components/Spinner';
 
 
@@ -13,6 +13,9 @@ const Login = () => {
     email:'',
     password:''
   })
+
+  //getting data  from the user
+  const user=JSON.parse(localStorage.getItem("userData"));
 
   const{email,password}=formData;
 
@@ -31,7 +34,12 @@ const Login = () => {
     }
     if (isSuccess) {
       toast.success(message);
-      navigate('/');
+      if(user.userRole=='employee'){
+        navigate('/employee-dashboard/')
+      }else{
+        navigate('/');
+      }
+      dispatch(reset());
     }
 
     if (isError) {

@@ -1,0 +1,187 @@
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
+
+const ProductDetails = () => {
+  const [productData, setProductData] = useState(null);
+  const [selectedColor, setSelectedColor] = useState('');
+  const [selectedSize, setSelectedSize] = useState('');
+  const [activeImage, setActiveImage] = useState('');
+  // const [availableSizes, setAvailableSizes] = useState([]);
+  const { slug } = useParams();
+  const navigate=useNavigate();
+
+  useEffect(() => {
+    const fetchProductData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5555/api/product/get-product/${slug}`);
+        setProductData(response.data);
+        setSelectedColor(response.data.product.color || '');
+        // setSelectedSize(response.data.product.size || '');
+        setActiveImage(response.data.variants[selectedColor]?.[selectedSize]?.image[0]?.url || '');
+      } catch (error) {
+        console.error('Error fetching product data:', error);
+      }
+    };
+
+    fetchProductData();
+  }, [slug, selectedColor, selectedSize]);
+
+
+  useEffect(() => {
+    if (productData) {
+      const { variants } = productData;
+      const availableSizes = variants[selectedColor] ? Object.keys(variants[selectedColor]) : [];
+      // setAvailableSizes(availableSizes);
+
+      const defaultSize = availableSizes.length > 0 ? availableSizes[0] : '';
+      setSelectedSize(defaultSize);
+      setActiveImage(variants[selectedColor]?.[defaultSize]?.image[0]?.url || '');
+    }
+  }, [slug]);
+
+
+
+
+    const handleColorChange = (color) => {
+    setSelectedColor(color);
+    
+    // Update the URL based on the selected color and size
+    navigate(`/productDetail/${productData.product.name.replace(/\s+/g, '-')}-${color}-${selectedSize}`);
+  };
+
+  const handleSizeChange = (size) => {
+    setSelectedSize(size);
+
+    // Update the URL based on the selected color and size
+    navigate(`/productDetail/${productData.product.name.replace(/\s+/g, '-')}-${selectedColor}-${size}`);
+  };
+  
+  
+
+  const { product, variants } = productData;
+
+  console.log(product);
+  return (
+    <section className="text-gray-700 body-font overflow-hidden bg-white">
+    <div className="container  px-5 py-12 flex mx-auto flex-wrap items-start justify-center">
+      <div className="w-full lg:w-2/3 bg-gray-100 rounded-lg overflow-hidden shadow-lg">
+        <div className="lg:flex lg:justify-between p-8">
+
+          <div className="lg:w-1/2">
+            <div className="flex flex-row lg:h-full">
+              <div className="flex flex-col p-4 items-center justify-center bg-gray-200  rounded-b-lg lg:rounded-b-none lg:rounded-l-lg">
+                {Object.values(variants[selectedColor]?.[selectedSize]?.image || []).map((image, index) => (
+                  <img
+                    key={index}
+            
+                    src={image.url}
+                    alt={`Product Image ${index + 1}`}
+                    className="w-20 cursor-pointer mt-2"
+                    onClick={() => setActiveImage(image.url)}
+                  />
+                ))}
+              </div>
+              <img
+                src={activeImage}
+                alt="Active Product Image"
+                className="w-full h-full object-cover rounded-t-lg lg:rounded-t-none lg:rounded-l-lg"
+              />
+            </div>
+          </div>
+
+          <div className="lg:w-1/2 lg:pl-8">
+            <div className="p-4 lg:p-8">
+              <h2 className="text-sm text-gray-500 tracking-widest mb-2">{product.brand}</h2>
+              <h1 className="text-3xl text-gray-900 font-medium mb-4">{product.name}</h1>
+              <div className="flex items-center mb-4">
+                {selectedSize==''?<></>:<><span className="mr-3">Size:</span>
+                <div className="flex space-x-2">
+                  {['s', 'm', 'l', 'xl', 'xxl'].map((size) => (
+                    <button
+                      key={size}
+                      onClick={() => handleSizeChange(size)}
+                      className={`w-10 h-10 rounded-full border-2 border-gray-300 focus:outline-none ${
+                        size === selectedSize ? 'bg-red-500 border-red-500' : ''
+                      }`}
+                      style={{
+                        backgroundColor: size === selectedSize ? '#4CAF50' : 'transparent',
+                        pointerEvents: variants[selectedColor]?.[size]?.stock ? 'auto' : 'none',
+                        opacity: variants[selectedColor]?.[size]?.stock ? 1 : 0.5,
+                      }}
+                      disabled={!variants[selectedColor]?.[size]?.stock}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div></>}
+                
+              </div>
+              <div className="flex items-center mb-4">
+                <span className="mr-3">Color:</span>
+                <div className="flex space-x-4">
+                  {Object.keys(variants).map((color) => (
+                    <button
+                      key={color}
+                      onClick={() => handleColorChange(color)}
+                      className={`w-8 h-8 rounded-full border-2 border-gray-300 focus:outline-none ${
+                        color === selectedColor ? 'bg-red-500' : ''
+                      }`}
+                      style={{
+                        backgroundImage: `url(${variants[selectedColor]?.[selectedSize]?.image[0]?.url})`,
+                        backgroundSize: 'cover',
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+              <p className="leading-relaxed mb-4">
+                {product.description.length > 150 ? `${product.description.substring(0, 150)}...` : product.description}
+              </p>
+              <p className="leading-relaxed mb-4">
+                Stock:{variants[selectedColor]?.[selectedSize]?.stock}
+              </p>
+              <div className="flex items-center pb-5 border-b border-gray-200 mb-5">
+                {/* Add the rest of the product details */}
+              </div>
+            </div>
+            <div className=" flex  justify-center">
+              <div className="flex space-x-4   items-center">
+              <div className="flex items-center">
+  {/* Original Price with cut line */}
+  <span className="text-xl text-gray-500 line-through mr-2">
+    ₹{variants[selectedColor]?.[selectedSize]?.originalPrice}
+  </span>
+  {/* Discounted Price */}
+  <span className="text-2xl text-gray-900 font-medium">
+    ₹{variants[selectedColor]?.[selectedSize]?.discountedPrice}
+  </span>
+</div>
+
+                <button className="flex ml-auto items-center text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded">
+                  Add to Cart
+                </button>
+                <button className="w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4 rounded-full">
+                  <svg
+                    fill="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    className="w-5 h-5"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</section>
+
+  );
+};
+
+export default ProductDetails;

@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import useCountdown from '../../hooks/countdown'; // Import the custom countdown hook
-import { handleOTPVerificationAction, handleSignupAction, resendOtpAction } from './authAction';
+import { handleOTPVerificationAction, handleSignupAction, resendOtpAction } from '../../Redux/Actions/authAction.js';
 import Spinner from '../../components/Spinner';
 import toast from 'react-hot-toast';
-import { reset } from './authSlice';
+import { reset } from '../../Redux/Slices/authSlice.js';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -36,6 +36,7 @@ const Signup = () => {
     if (isSuccess) {
       toast.success(message);
       navigate('/login');
+      dispatch(reset());
     }
 
     if (isError) {
