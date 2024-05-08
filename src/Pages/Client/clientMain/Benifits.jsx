@@ -1,22 +1,27 @@
 import React from 'react'
+import delivery from '../../../assets/delivery.webp';
+import cod from '../../../assets/cod.webp';
+import headphones from '../../../assets/headphones.webp';
+import seller from '../../../assets/seller.webp';
+
 
 const Benifits = () => {
     const benefitContent = [
         {
           title: 'express delivery',
-          imgSrc: 'https://zishop.vercel.app/_next/image?url=%2Fimages%2Fbenefit-icons%2F005-delivery-truck-2.webp&w=96&q=75',
+          imgSrc: delivery
         },
         {
           title: 'payment on the spot',
-          imgSrc: 'https://zishop.vercel.app/_next/image?url=%2Fimages%2Fbenefit-icons%2F003-cash-on-delivery.webp&w=96&q=75',
+          imgSrc: cod
         },
         {
           title: '24/7 support',
-          imgSrc: 'https://zishop.vercel.app/_next/image?url=%2Fimages%2Fbenefit-icons%2F004-headphones.webp&w=96&q=75',
+          imgSrc: headphones
         },
         {
           title: 'Guarantee the originality',
-          imgSrc: 'https://zishop.vercel.app/_next/image?url=%2Fimages%2Fbenefit-icons%2F006-best-seller.webp&w=96&q=75',
+          imgSrc: seller
         },
       ];
   return (

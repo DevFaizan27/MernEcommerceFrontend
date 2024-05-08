@@ -6,19 +6,14 @@ import axios from "axios";
 
 
 //get all products
-export const getProducts=createAsyncThunk(
-    'user/getProducts',
-    async(thunkAPI)=>{
+export const getProductsAsync=createAsyncThunk(
+    'product/getProductsAsync',
+    async(_,{rejectWithValue})=>{
         try {
-            await axios.get('http://localhost:5555/api/product/get-all-products')
-            .then((res) => {
-                return res;
-            })
-            .catch((err) => {
-                return err;
-            });
+        const response=await axios.get('http://localhost:5555/api/product/get-all-products');
+        return response.data.data;
         } catch (error) {
-            return thunkAPI.rejectWithValue(error.response.data.error)
+            throw rejectWithValue(error.response.data.error)
         }
     }
 )
@@ -28,23 +23,15 @@ export const getProducts=createAsyncThunk(
 
 export const getProductBySlugAsync = createAsyncThunk(
     'products/getProductBySlugAsync',
-    async (slug, thunkAPI) => {
+    async (slug, {rejectWithValue}) => {
       try {
         const res = await axios.get(`http://localhost:5555/api/product/get-product/${slug}`);
         return res.data;
       } catch (error) {
-        throw new Error(error.response.data.error);
+        throw  rejectWithValue(error.response.data.error);
       }
     }
   );
-
-
-
-
-
-
-
-
 
 
 
@@ -58,16 +45,32 @@ export const getProductBySlugAsync = createAsyncThunk(
 //to add product
 export const addProduct=createAsyncThunk(
     'admin/addProduct',
-    async(productData,thunkAPI)=>{
+    async(formDataWithFiles,{rejectWithValue})=>{
         try {
-            const response=await axios.post(`http://localhost:5555/api/product/employee/add-product`,productData,{ headers: {
-                'Content-Type': 'application/json',
+            const response=await axios.post(`http://localhost:5555/api/product/employee/add-product`,formDataWithFiles,{ headers: {
+                'Content-Type': 'multipart/form-data',
                 'Authorization': localStorage.getItem('token'),
             }})
             return response.data.success
-
         } catch (error) {
-            return thunkAPI.rejectWithValue(error.response.data.error)
+            throw rejectWithValue(error.response.data.error)
+        }
+    }
+)
+
+
+export const getEmployeeProductsAsync=createAsyncThunk(
+    'product/getEmployeeProductsAsync',
+    async(_,{rejectWithValue})=>{
+        try {
+        const res=await axios.get('http://localhost:5555/api/product/employee/getEmployeeProducts',{
+            headers: {
+                'Authorization': localStorage.getItem('token'),
+            }
+        });
+        return res.data.data;
+        } catch (error) {
+            throw rejectWithValue(error.response.data.error)
         }
     }
 )

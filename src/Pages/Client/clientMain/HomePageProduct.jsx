@@ -1,24 +1,36 @@
-import React, {  useEffect, useState } from "react";
-import axios from 'axios';
+import React, { useEffect } from "react";
 import ProductCard from "./ProductCard";
+import { useDispatch, useSelector } from "react-redux";
+import { getProductsAsync } from "../../../Redux/Actions/productAction";
+import Spinner from "../../../components/Spinner";
+import toast from "react-hot-toast";
+import { reset } from "../../../Redux/Slices/productslice.js";
 
 const HomePageProduct = () => {
-    const [productData, setProductData] = useState([]);
-    
+    const dispatch = useDispatch();
 
+ 
 
+    const { products, isLoading, isError, message, isSuccess } = useSelector((state) => state.product);
 
 
     useEffect(() => {
-        axios.get('http://localhost:5555/api/product/get-all-products')
-            .then((res) => {
-                setProductData(res.data.data);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }, []);
+        dispatch(getProductsAsync());
+    }, [dispatch]);
 
+    useEffect(() => {
+        if (isSuccess) {
+            dispatch(reset());
+        }
+
+        if (isError) {
+            toast.error(message);
+            dispatch(reset());
+        }
+    }, [isError, isSuccess, message, dispatch]);
+
+    console.log("Products:", isLoading);
+    
     return (
         <div className="mt-10">
             <div className="">
@@ -27,12 +39,12 @@ const HomePageProduct = () => {
             <section className="text-gray-600 body-font">
                 <div className="container px-5 py-5 mx-auto">
                     <div className="flex flex-wrap -m-4">
-                        {productData.length > 0 ? (
-                            productData.map((data) => (
-                                <ProductCard key={data._id} data={data} />
-                            ))
+                        {isLoading ? (
+                           <p>Loading......</p>
                         ) : (
-                            <p>Loading...</p>
+                            products?.map((data) => (
+                                <ProductCard key={data?._id} data={data} />
+                            ))
                         )}
                     </div>
                 </div>

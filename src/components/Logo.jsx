@@ -1,18 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import client from '../assets/Client.png';
+import logoicon from '../assets/logoicon.png';
 
 const Logo = () => {
   return (
-    <Link to="/">
-      <div className="flex items-center justify-center">
-        <img
-          src={client}
-          alt="E-ihsaan-logo"
-          className="cursor-pointer w-32 md:w-36 lg:w-44 h-auto "
-        />
-      </div>
-    </Link>
+    <div className="flex items-center">
+      <h3 className="flex items-center text-xl font-bold">
+        <img src={logoicon} alt="Logo Icon" className="w-10 h-10 mr-2" />
+        <span className="md:inline-block whitespace-nowrap">E-ihsaan</span> {/* Added whitespace-nowrap class */}
+      </h3>
+    </div>
   );
 };
 

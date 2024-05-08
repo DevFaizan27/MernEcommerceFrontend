@@ -1,13 +1,15 @@
 import React from 'react'
-import Carousel from './Carousel'
 import Benifits from './Benifits'
 import TodaysOffer from './TodaysOffer'
 import HomePageProduct from './HomePageProduct'
+import Carousel from './Carousel'
+import Categories from '../Clientheader/Categories'
 
 const ClientHome = () => {
   return (
     <div> 
-    <Carousel/>
+      <Carousel/>
+      <Categories/>
     <Benifits/>
     <TodaysOffer/>
     <HomePageProduct/>

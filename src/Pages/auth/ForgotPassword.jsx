@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { resetPasswordAction, resetPasswordOtpAction } from '../../Redux/Actions/authAction.js';
+import { forgetPassword } from '../../Redux/Actions/authAction.js';
 import { useNavigate } from 'react-router-dom';
 import Spinner from '../../components/Spinner';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,53 +10,35 @@ import { useTheme } from '../../context/themeContext.jsx';
 const ForgotPassword = () => {
   const { isDarkMode } = useTheme();
 
-  const [formData, setFormData] = useState({
-    email: '',
-    newPassword: '',
-    otp: ''
-  });
+  const[email,setEmail]=useState("");
+  console.log(email);
 
-  const { email, newPassword, otp } = formData;
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { showOTPField, isLoading, isOtpSendSuccess, isError, isSuccess, message } = useSelector(
+  const { isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.auth
   );
 
   useEffect(() => {
-    if (isError) {
+    if (isError){
       toast.error(message);
-    }
-    if (isOtpSendSuccess) {
-      toast.success(message);
+      dispatch(reset());
     }
     if (isSuccess) {
       toast.success(message);
       navigate('/login');
       dispatch(reset());
     }
-  }, [isError, isSuccess, message, navigate, dispatch, isOtpSendSuccess, showOTPField]);
+  }, [isError, isSuccess, message, navigate, dispatch]);
 
-  const onChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value
-    }));
-  };
+ 
 
-  const sendOtp = (e) => {
+  const forgetPasswordHandler = (e) => {
     e.preventDefault();
-    const userData = { email };
-    dispatch(resetPasswordOtpAction(userData));
+    dispatch(forgetPassword(email));
   };
 
-  const resetPassword = (e) => {
-    e.preventDefault();
-    const userData = { email, otp, newPassword };
-    dispatch(resetPasswordAction(userData));
-  };
 
   // Define dynamic styles based on the theme
   const inputBgColor = isDarkMode ? 'bg-gray-800' : 'bg-gray-200';
@@ -73,44 +55,16 @@ const ForgotPassword = () => {
             type="email"
             name='email'
             value={email}
-            onChange={onChange}
+            onChange={(e)=>{setEmail(e.target.value)}}
             placeholder="Email"
-            disabled={showOTPField}
             className={`block w-full border border-gray-300 rounded-md px-4 py-2 mb-4 focus:outline-none focus:border-indigo-500 ${inputBgColor} ${inputTextColor}`}
           />
           <button
-            onClick={sendOtp}
-            disabled={showOTPField}
+            onClick={forgetPasswordHandler}
             className={`block w-full bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600 focus:outline-none focus:border-indigo-700 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 mb-4`}
           >
-            Get OTP
+            Reset Password
           </button>
-          {showOTPField && (
-            <>
-              <input
-                type="text"
-                name='otp'
-                value={otp}
-                onChange={onChange}
-                placeholder="OTP"
-                className={`block w-full border border-gray-300 rounded-md px-4 py-2 mb-4 focus:outline-none focus:border-indigo-500 ${inputBgColor} ${inputTextColor}`}
-              />
-              <input
-                type="password"
-                name='newPassword'
-                value={newPassword}
-                onChange={onChange}
-                placeholder="Password"
-                className={`block w-full border border-gray-300 rounded-md px-4 py-2 mb-4 focus:outline-none focus:border-indigo-500 ${inputBgColor} ${inputTextColor}`}
-              />
-              <button
-                onClick={resetPassword}
-                className={`block w-full bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600 focus:outline-none focus:border-indigo-700 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 mb-4`}
-              >
-                Reset Password
-              </button>
-            </>
-          )}
         </div>
       )}
     </div>

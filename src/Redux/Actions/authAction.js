@@ -7,45 +7,15 @@ import axios from 'axios';
 //signup action to signup and genenrate otp
 export const handleSignupAction = createAsyncThunk(
   'auth/handleSignupAction',
-  async (userData, thunkAPI) => {
+  async (userData, {rejectWithValue}) => {
     try {
       const response = await axios.post(`http://localhost:5555/api/user/signup`, userData);
       return response.data.success;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.error)
+      throw rejectWithValue(error.response.data.error)
     }
   }
 );
-
-
-//verify otp action
-export const handleOTPVerificationAction = createAsyncThunk(
-  'auth/handleOTPVerificationAction',
-  async (userData, thunkAPI) => {
-    try {
-      const response = await axios.post(`http://localhost:5555/api/user/verify-otp`, userData);
-      return response.data.success;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.error)
-    }
-  }
-);
-
-//resent otp action
-export const resendOtpAction = createAsyncThunk(
-  'auth/resendOtpAction',
-  async (userData, thunkAPI) => {
-    try {
-      const response = await axios.post(`http://localhost:5555/api/user/resend-otp`, userData);
-      return response.data.success;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.error)
-    }
-  }
-);
-
-
-
 
 
 // // ------------------------------------------>>login action<<------------------------------------------
@@ -54,7 +24,7 @@ export const resendOtpAction = createAsyncThunk(
 // // action for login
 export const loginAction=createAsyncThunk(
   'auth/loginAction',
-  async(userData,thunkAPI)=>{
+  async(userData,{rejectWithValue})=>{
     try {
       const response = await axios.post(`http://localhost:5555/api/user/login`,userData);
       localStorage.setItem("token",response.data.token);
@@ -62,21 +32,21 @@ export const loginAction=createAsyncThunk(
       localStorage.setItem("userData",userInfo);
       return response.data.success
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.error)
+      throw rejectWithValue(error.response.data.error)
     }
   }
 )
 
 
-//action to send the otp for reset password
-export const resetPasswordOtpAction=createAsyncThunk(
-  'auth/resetPasswordOtpAction',
-  async(userData,thunkAPI)=>{
-    try {
-      const response = await axios.post(`http://localhost:5555/api/user/update-password-otp`,userData);
-      return response.data.success
+//action to send the email token for resetting password
+export const forgetPassword=createAsyncThunk(
+  'auth/forgetPassword',
+  async(email,{rejectWithValue})=>{
+      try {
+      const response = await axios.post(`http://localhost:5555/api/user/forgetPassword`,{email:email});
+      return response.data.success;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.error)
+      throw rejectWithValue(error.response.data.error);
     }
   }
 )
@@ -85,13 +55,13 @@ export const resetPasswordOtpAction=createAsyncThunk(
 //reset password
 export const resetPasswordAction=createAsyncThunk(
   'auth/resetPasswordAction',
-  async(userData,thunkAPI)=>{
+  async({token,newPassword},{rejectWithValue})=>{
     try {
-      const response = await axios.post(`http://localhost:5555/api/user/update-password`,userData);
-      localStorage.removeItem('token')
-      return response.data.success
+      const response = await axios.post(`http://localhost:5555/api/user/reset-password/${token}`, { newPassword });
+      localStorage.removeItem('token');
+      return response.data.success;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.error)
+      throw rejectWithValue(error.response.data.error);
     }
   }
 )

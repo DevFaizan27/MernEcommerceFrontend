@@ -48,11 +48,11 @@ const Carousel = () => {
   };
 
   return (
-    <div className="carousel-container md:w-11/12 md:mx-auto  max-w-full">
+    <div className="carousel-container md:w-11/12 md:mx-auto  max-w-full " >
       <Slider {...settings}>
         {data.map((item, index) => (
           <div key={index}>
-            <img src={item.images[0].url} alt={`Slide ${index + 1}`} className="carousel-image w-full"/>
+            <img src={item.images[0].url} alt={`Slide ${index + 1}`} className="carousel-image w-full" style={{ height: '300px' }}/>
           </div>
         ))}
       </Slider>

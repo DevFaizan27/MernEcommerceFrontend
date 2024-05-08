@@ -31,7 +31,7 @@ const ProductDetails = () => {
 
   //function to change color
   const handleColorChange = (color) => {
-    // Check if the selected size is available for the newly selected color
+    // Checking if the selected size is available for the newly selected color
     const selectedSizeAvailable = productVariants[color]?.[selectedSize]?.stock > 0;
 
     if (selectedSizeAvailable) {
@@ -77,6 +77,10 @@ const ProductDetails = () => {
     }
     return ''; // Return empty string if no image is found
   };
+
+  function createMarkup(c){
+    return {__html: c};
+  }
 
 
   return (
@@ -157,9 +161,33 @@ const ProductDetails = () => {
                   </div>
                 </div>
 
-                <p className="leading-relaxed mb-4">
-                  {productDetails?.description}
-                </p>
+                  <p className={`fontPar  'text-black'}`}>
+                      <div className={`
+                        [&> h1]:text-[32px] [&>h1]:font-bold  [&>h1]:mb-2.5 [&>h1]:text-black
+
+                        [&>h2]:text-[24px] [&>h2]:font-bold [&>h2]:mb-2.5 [&>h2]:text-black
+
+                        [&>h3]:text-[18.72px] [&>h3]:font-bold [&>h3]:mb-2.5 [&>h3]:text-black
+
+                        [&>h4]:text-[16px] [&>h4]:font-bold [&>h4]:mb-2.5 [&>h4]:text-black
+
+                        [&>h5]:text-[13.28px] [&>h5]:font-bold [&>h5]:mb-2.5 [&>h5]:text-black
+
+                        [&>h6]:text-[10px] [&>h6]:font-bold [&>h6]:mb-2.5 [&>h6]:text-black
+
+                        [&>p]:text-[16px] [&>p]:mb-1.5 [&>p]:text-black
+
+                        [&>ul]:list-disc [&>ul]:mb-2 [&>ul]:text-black
+
+                        [&>ul]:list-inside 
+
+                        [&>ol]:list-decimal [&>li]:mb-10 [&>ol]:text-black
+
+                        [&>li]:list-decimal [&>ol]:mb-2 
+
+                        [&>img]:rounded-lg
+                        `} dangerouslySetInnerHTML={createMarkup(productDetails?.description)}></div>
+                    </p>
                 <p className="leading-relaxed mb-4">
                   Stock:{productDetails?.stock}
                 </p>
